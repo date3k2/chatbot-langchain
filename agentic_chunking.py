@@ -26,17 +26,11 @@ class Sentences(BaseModel):
 def get_propositions(text):
     prompt = ChatPromptTemplate.from_template(
         """
-Decompose the following content into clear and simple propositions, ensuring they are interpretable out of
-context.
-1. Split compound sentence into simple sentences. Maintain the original phrasing from the input
-whenever possible.
-2. For any named entity that is accompanied by additional descriptive information, separate this
-information into its own distinct proposition.
-3. Decontextualize the proposition by adding necessary modifier to nouns or entire sentences
-and replacing pronouns (e.g., "it", "he", "she", "they", "this", "that") with the full name of the
-entities they refer to.
-4. You can remove some information if it is not necessary to understand the meaning of the context.
-5. Present the results as a list of strings, formatted in JSON.
+Here are texts I crawled from a company webpage, please break it into some chunks of relevant information about company such as About Us, Mission,  Services and Products, Address, Contact, Careers, FAQ, and more.
+Ensuring they are interpretable out of context. Here are some more guidelines to help you:
+1. You can modify the text as you see fit, comprehensively and accurately.
+2. Present the results as a list of strings, formatted in JSON, example:
+["About Us: <Company's name> is a financial company that does X and Y.", "Mission: <Company's name> mission is to do Z.", ...]
 
 Content:
 {input}
@@ -48,4 +42,3 @@ Content:
     )
     chain = prompt | llm | JsonOutputParser(pydantic_object=Sentences)
     return chain.invoke({"input": text})
-    # return propositions
